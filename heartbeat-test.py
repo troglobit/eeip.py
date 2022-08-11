@@ -30,10 +30,14 @@ parser.add_argument('-r', action='store_true', dest='t_o_runidle',
                     help='Expect Real-Time header on T->O for non-heartbeat assemblies')
 args = parser.parse_args()
 
-eeipclient = EEIPClient()
-
-print("=== Stage 1: output 101, input 254");
-eeipclient.register_session(args.address)
+try:
+    eeipclient = EEIPClient()
+    eeipclient.register_session(args.address)
+except ConnectionError as e:
+    print("Failed connecting to " + args.address + ": " + str(e))
+    sys.exit(1)
+else:
+    print("=== Stage 1: output 101, input 254");
 
 # Parameters from Originator -> Target
 eeipclient.o_t_instance_id = 101
