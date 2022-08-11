@@ -18,9 +18,15 @@ In Stage 2 the process is reversed, the T->O use assembly 100 instead.
 Note, some customers require a Real-Time header also on the T->O data.
 For those uses-cases, replace MODELESS with HEADER32BIT below.
 """
-from eeip import *
+import argparse
 import sys
 import time
+from eeip import *
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-r', '--t-o-real-time', action='store_true', dest='t_o_runidle',
+                    help='Expect Real-Time header on T->O for non-heartbeat assemblies.')
+args = parser.parse_args()
 
 eeipclient = EEIPClient()
 
@@ -71,7 +77,6 @@ print("=== Stage 2: output 254, input 100");
 #eeipclient.register_session('127.0.0.1')
 eeipclient.register_session('192.168.2.1')
 
-
 # Parameters from Originator -> Target
 eeipclient.o_t_instance_id = 254 #101
 eeipclient.o_t_length = 0 #154
@@ -85,7 +90,10 @@ eeipclient.o_t_connection_type = ConnectionType.POINT_TO_POINT
 eeipclient.t_o_instance_id = 100
 eeipclient.t_o_length = 78
 eeipclient.t_o_requested_packet_rate = 200000  # Packet rate 200ms (default 500ms)
-eeipclient.t_o_realtime_format = RealTimeFormat.MODELESS #RealTimeFormat.HEADER32BIT #
+if args.t_o_runidle:
+    eeipclient.t_o_realtime_format = RealTimeFormat.HEADER32BIT
+else:
+    eeipclient.t_o_realtime_format = RealTimeFormat.MODELESS
 eeipclient.t_o_owner_redundant = False
 eeipclient.t_o_variable_length = False
 eeipclient.t_o_connection_type = ConnectionType.MULTICAST
