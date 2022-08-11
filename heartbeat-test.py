@@ -24,15 +24,16 @@ import time
 from eeip import *
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-r', '--t-o-real-time', action='store_true', dest='t_o_runidle',
-                    help='Expect Real-Time header on T->O for non-heartbeat assemblies.')
+parser.add_argument('-a', default='127.0.0.1', type=str, dest='address',
+                    help='Address of adapter to connect to, default: 127.0.0.1')
+parser.add_argument('-r', action='store_true', dest='t_o_runidle',
+                    help='Expect Real-Time header on T->O for non-heartbeat assemblies')
 args = parser.parse_args()
 
 eeipclient = EEIPClient()
 
 print("=== Stage 1: output 101, input 254");
-#eeipclient.register_session('127.0.0.1')
-eeipclient.register_session('192.168.2.1')
+eeipclient.register_session(args.address)
 
 # Parameters from Originator -> Target
 eeipclient.o_t_instance_id = 101
@@ -73,9 +74,7 @@ time.sleep(2)
 print("=== Stage 2: output 254, input 100");
 # Ip-Address of the Ethernet-IP Device (In this case Allen-Bradley 1734-AENT Point I/O)
 # A Session has to be registered before any communication can be established
-# eeipclient.register_session('172.31.1.223')
-#eeipclient.register_session('127.0.0.1')
-eeipclient.register_session('192.168.2.1')
+eeipclient.register_session(args.address)
 
 # Parameters from Originator -> Target
 eeipclient.o_t_instance_id = 254 #101
