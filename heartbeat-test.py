@@ -32,6 +32,7 @@ args = parser.parse_args()
 
 try:
     eeipclient = EEIPClient()
+    print("Registering EtherNet/IP session.")
     eeipclient.register_session(args.address)
 except ConnectionError as e:
     print("Failed connecting to " + args.address + ": " + str(e))
@@ -55,7 +56,7 @@ eeipclient.t_o_requested_packet_rate = 200000
 eeipclient.t_o_realtime_format = RealTimeFormat.HEARTBEAT
 eeipclient.t_o_owner_redundant = False
 eeipclient.t_o_variable_length = False
-eeipclient.t_o_connection_type = ConnectionType.MULTICAST
+eeipclient.t_o_connection_type = ConnectionType.POINT_TO_POINT #ConnectionType.MULTICAST
 
 try:
     eeipclient.forward_open()
@@ -66,18 +67,19 @@ except cip.CIPException as e:
 else:
     print("Waiting 2 sec before closing connection ...")
     time.sleep(2)
-    print("Closing connection.");
+    print("Forward close.")
     eeipclient.forward_close()
 
-print("Unregistering session.");
+print("Unregistering EtherNet/IP session.")
 eeipclient.unregister_session()
 
 # Wait a bit before next test phase
 time.sleep(2)
 
-print("=== Stage 2: output 254, input 100");
+print("=== Stage 2: output 254, input 100")
 # Ip-Address of the Ethernet-IP Device (In this case Allen-Bradley 1734-AENT Point I/O)
 # A Session has to be registered before any communication can be established
+print("Registering EtherNet/IP session.")
 eeipclient.register_session(args.address)
 
 # Parameters from Originator -> Target
@@ -99,7 +101,7 @@ else:
     eeipclient.t_o_realtime_format = RealTimeFormat.MODELESS
 eeipclient.t_o_owner_redundant = False
 eeipclient.t_o_variable_length = False
-eeipclient.t_o_connection_type = ConnectionType.MULTICAST
+eeipclient.t_o_connection_type = ConnectionType.MULTICAST #ConnectionType.POINT_TO_POINT
 
 try:
     eeipclient.forward_open()
@@ -110,9 +112,9 @@ except cip.CIPException as e:
 else:
     print("Waiting 2 sec before closing connection ...")
     time.sleep(2)
-    print("Closing connection.");
+    print("Forward close.")
     eeipclient.forward_close()
 
-print("Unregistering session.");
+print("Unregistering EtherNet/IP session.")
 eeipclient.unregister_session()
 print("Done.")
