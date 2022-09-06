@@ -109,6 +109,10 @@ except cip.CIPException as e:
     print("Failed Input Only fwd open: " + str(e))
     eeipclient.unregister_session()
     sys.exit(1)
+except OSError as e:
+    print("OS error in Input Only fwd open: " + str(e))
+    eeipclient.unregister_session()
+    sys.exit(1)
 else:
     print("Waiting 2 sec before closing connection ...")
     time.sleep(2)
