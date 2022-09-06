@@ -535,6 +535,9 @@ class EEIPClient:
         self.__udp_server_socket.bind(('', self.__originator_udp_port))
         if self.__t_o_connection_type == ConnectionType.MULTICAST:
             mc_address = self.int2ip(self.__multicastAddress)
+            if mc_address == "0.0.0.0":
+                raise cip.CIPException("Invalid multicast group 0.0.0.0 received from adapter")
+            #print("Using mc address: " + mc_address)
             group = socket.inet_aton(mc_address)
             mreq = struct.pack('=4sL', group, socket.INADDR_ANY)
             self.__udp_server_socket.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
