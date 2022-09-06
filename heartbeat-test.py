@@ -26,6 +26,8 @@ from eeip import *
 parser = argparse.ArgumentParser()
 parser.add_argument('-a', default='127.0.0.1', type=str, dest='address',
                     help='Address of adapter to connect to, default: 127.0.0.1')
+parser.add_argument('-d', default='2', type=int, dest='delay',
+                    help='Delay in seconds between fwd open and fwd close, default: 2')
 parser.add_argument('-r', action='store_true', dest='t_o_runidle',
                     help='Expect Real-Time header on T->O for non-heartbeat assemblies')
 args = parser.parse_args()
@@ -65,8 +67,8 @@ except cip.CIPException as e:
     eeipclient.unregister_session()
     sys.exit(1)
 else:
-    print("Waiting 2 sec before closing connection ...")
-    time.sleep(2)
+    print("Waiting %d sec before closing connection ..." % args.delay)
+    time.sleep(args.delay)
     print("Forward close.")
     eeipclient.forward_close()
 
@@ -114,8 +116,8 @@ except OSError as e:
     eeipclient.unregister_session()
     sys.exit(1)
 else:
-    print("Waiting 2 sec before closing connection ...")
-    time.sleep(2)
+    print("Waiting %d sec before closing connection ..." % args.delay)
+    time.sleep(args.delay)
     print("Forward close.")
     eeipclient.forward_close()
 
